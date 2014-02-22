@@ -47,18 +47,11 @@ public class ClusterCollection {
 		int maxX = position.getX() + 1, maxY = position.getY() + 1, minX = position
 				.getX() - 1, minY = position.getY() - 1;
 
-		if (col < maxX) {
-			maxX = col;
-		}
-		if (row < maxY) {
-			maxY = row;
-		}
-		if (minX < 0) {
-			minX = 0;
-		}
-		if (minY < 0) {
-			minY = 0;
-		}
+		maxX = Math.min(maxX, col);
+		minX = Math.max(minX, 0);
+
+		maxY = Math.min(maxY, row);
+		minY = Math.max(minY, 0);
 
 		for (int x = minX; x < maxX; x++) {
 			for (int y = minY; y < maxY; y++) {
