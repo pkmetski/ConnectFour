@@ -4,10 +4,24 @@ public class Position {
 
 	private int x;
 	private int y;
+	private int value = 0;
 
 	public Position(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public Position(int x, int y, int value) {
+		this(x, y);
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	public int getX() {

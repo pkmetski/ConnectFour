@@ -1,4 +1,4 @@
-package Model;
+package Logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,13 +6,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ClusterCollection {
+import Model.Cluster;
+import Model.Position;
+
+public class ClusterManager {
 
 	private Map<Position, Cluster> reverseIndex;
 	private ArrayList<Cluster> clusters;
 	private int col, row;
 
-	public ClusterCollection(int col, int row) {
+	public ClusterManager(int col, int row) {
 		this.reverseIndex = new HashMap<Position, Cluster>();
 		this.clusters = new ArrayList<Cluster>();
 		this.col = col;
@@ -20,23 +23,30 @@ public class ClusterCollection {
 	}
 
 	public void addPosition(Position position) {
-		Set<Cluster> neighbours = getNeighbouringClusters(position);
 
 		Cluster cluster = new Cluster(position);
+		this.reverseIndex.put(position, cluster);
+		this.clusters.add(cluster);
+
+		Set<Cluster> neighbours = getNeighbouringClusters(cluster);
+
 		if (0 < neighbours.size()) {
 			merge(cluster, neighbours);
-		} else {
-			this.reverseIndex.put(position, cluster);
-			this.clusters.add(cluster);
 		}
 	}
 
-	private Set<Cluster> getNeighbouringClusters(Position position) {
-
+	// return all the clusters around this position
+	private Set<Cluster> getNeighbouringClusters(Cluster cluster) {
 		Set<Cluster> neighbouringClusters = new HashSet<Cluster>();
-		Set<Position> neighbours = getNeighbouringPositions(position);
-		for (Position pos : neighbours) {
-			neighbouringClusters.add(this.reverseIndex.get(pos));
+		for (Position position : cluster.getPositions()) {
+			Set<Position> neighbours = getNeighbouringPositions(position);
+			for (Position pos : neighbours) {
+				if (this.reverseIndex.containsKey(pos)
+						&& this.reverseIndex.get(pos).getValue() == cluster
+								.getValue()) {
+					neighbouringClusters.add(this.reverseIndex.get(pos));
+				}
+			}
 		}
 		return neighbouringClusters;
 	}
@@ -47,14 +57,14 @@ public class ClusterCollection {
 		int maxX = position.getX() + 1, maxY = position.getY() + 1, minX = position
 				.getX() - 1, minY = position.getY() - 1;
 
-		maxX = Math.min(maxX, col);
+		maxX = Math.min(maxX, col - 1);
 		minX = Math.max(minX, 0);
 
-		maxY = Math.min(maxY, row);
+		maxY = Math.min(maxY, row - 1);
 		minY = Math.max(minY, 0);
 
-		for (int x = minX; x < maxX; x++) {
-			for (int y = minY; y < maxY; y++) {
+		for (int x = minX; x <= maxX; x++) {
+			for (int y = minY; y <= maxY; y++) {
 				if (x == position.getX() && y == position.getY()) {
 					continue;
 				}
@@ -75,5 +85,15 @@ public class ClusterCollection {
 			this.clusters.remove(neighbourCluster);
 		}
 		return cluster;
+	}
+
+	public Iterable<Cluster> getClustersOfMinSize(int minSize) {
+		Set<Cluster> filteredClusters = new HashSet<Cluster>();
+		for (Cluster cluster : this.clusters) {
+			if (minSize <= cluster.size()) {
+				filteredClusters.add(cluster);
+			}
+		}
+		return filteredClusters;
 	}
 }

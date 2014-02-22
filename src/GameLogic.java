@@ -1,16 +1,16 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import Model.Cluster;
-import Model.ClusterCollection;
+import Logic.ClusterManager;
+import Logic.PatternControl;
 import Model.Position;
 
 public class GameLogic implements IGameLogic {
 	private int x = 0;
 	private int y = 0;
 	private int playerID;
-	ClusterCollection CC;
+	private ClusterManager cManager;
+	private PatternControl pControl;
+	private Position[][] board;
+	private int[] yPos;
+	private final int WINNING_SIZE = 4;
 
 	public GameLogic() {
 		// TODO Write your implementation for this method
@@ -20,21 +20,31 @@ public class GameLogic implements IGameLogic {
 		this.x = x;
 		this.y = y;
 		this.playerID = playerID;
-		 CC=new ClusterCollection(x, y);
-		// TODO Write your implementation for this method
+		cManager = new ClusterManager(x, y);
+		pControl = new PatternControl();
+		board = new Position[x][y];
+		yPos = new int[x];
 	}
 
 	public Winner gameFinished() {
-		// TODO Write your implementation for this method
-		return Winner.NOT_FINISHED;
+		int result = pControl.playerWithContiguousLineOfSize(
+				cManager.getClustersOfMinSize(WINNING_SIZE), WINNING_SIZE);
+
+		if (result == 1) {
+			return Winner.PLAYER1;
+		} else if (result == 2) {
+			return Winner.PLAYER2;
+		} else if (isBoardFull()) {
+			return Winner.TIE;
+		} else {
+			return Winner.NOT_FINISHED;
+		}
 	}
 
-	public void insertCoin(int column, int playerID) {
-		// TODO Write your implementation for this method
-		
-		
-		//get the x,y coordinates of the coin to insert
-		//add a new 
+	public void insertCoin(int x, int playerID) {
+		Position pos = new Position(x, yPos[x], playerID);
+		board[x][yPos[x]++] = pos;
+		cManager.addPosition(pos);
 	}
 
 	public int decideNextMove() {
@@ -42,4 +52,12 @@ public class GameLogic implements IGameLogic {
 		return 0;
 	}
 
+	private boolean isBoardFull() {
+		for (int i = 0; i < yPos.length; i++) {
+			if (yPos[i] < y - 1) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
