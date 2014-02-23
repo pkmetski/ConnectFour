@@ -2,15 +2,11 @@ package Logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import Model.Cluster;
 import Model.Position;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class PatternControl {
 
@@ -19,10 +15,6 @@ public class PatternControl {
 	};
 
 	public int playerWithContiguousLineOfSize(Set<Cluster> clusters, int minSize) {
-
-		// return 0;
-		// Random rand = new Random();
-		// return rand.nextInt(3);
 		if (clusters.isEmpty())
 			return 0;
 		for (Cluster cluster : clusters) {
