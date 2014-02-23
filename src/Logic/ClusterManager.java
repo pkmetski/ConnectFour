@@ -11,47 +11,26 @@ import Model.Position;
 
 public class ClusterManager {
 
-	private Map<Position, Cluster> reverseIndex;
-	private ArrayList<Cluster> clusters;
-	private int col, row;
-
-	public ClusterManager(int col, int row) {
-		this.reverseIndex = new HashMap<Position, Cluster>();
-		this.clusters = new ArrayList<Cluster>();
-		this.col = col;
-		this.row = row;
-	}
-
-	public void addPosition(Position position) {
-
-		Cluster cluster = new Cluster(position);
-		this.reverseIndex.put(position, cluster);
-		this.clusters.add(cluster);
-
-		Set<Cluster> neighbours = getNeighbouringClusters(cluster);
-
-		if (0 < neighbours.size()) {
-			merge(cluster, neighbours);
-		}
-	}
-
 	// return all the clusters around this position
-	private Set<Cluster> getNeighbouringClusters(Cluster cluster) {
+	public static Set<Cluster> getNeighbouringClusters(Cluster cluster,
+			Map<Position, Cluster> reverseIndex, int col, int row) {
 		Set<Cluster> neighbouringClusters = new HashSet<Cluster>();
 		for (Position position : cluster.getPositions()) {
-			Set<Position> neighbours = getNeighbouringPositions(position);
+			Set<Position> neighbours = getNeighbouringPositions(position, col,
+					row);
 			for (Position pos : neighbours) {
-				if (this.reverseIndex.containsKey(pos)
-						&& this.reverseIndex.get(pos).getValue() == cluster
+				if (reverseIndex.containsKey(pos)
+						&& reverseIndex.get(pos).getValue() == cluster
 								.getValue()) {
-					neighbouringClusters.add(this.reverseIndex.get(pos));
+					neighbouringClusters.add(reverseIndex.get(pos));
 				}
 			}
 		}
 		return neighbouringClusters;
 	}
 
-	private Set<Position> getNeighbouringPositions(Position position) {
+	private static Set<Position> getNeighbouringPositions(Position position,
+			int col, int row) {
 		Set<Position> positions = new HashSet<Position>();
 
 		int maxX = position.getX() + 1, maxY = position.getY() + 1, minX = position
@@ -74,26 +53,17 @@ public class ClusterManager {
 		return positions;
 	}
 
-	private Cluster merge(Cluster cluster, Set<Cluster> neighbours) {
+	public static Cluster merge(Cluster cluster, Set<Cluster> neighbours,
+			Map<Position, Cluster> reverseIndex, ArrayList<Cluster> clusters) {
 		for (Cluster neighbourCluster : neighbours) {
 			cluster.addRange(neighbourCluster);
 			// update the reversed index
 			for (Position pos : neighbourCluster.getPositions()) {
-				this.reverseIndex.put(pos, cluster);
+				reverseIndex.put(pos, cluster);
 			}
 			// remove from clusters collection
-			this.clusters.remove(neighbourCluster);
+			clusters.remove(neighbourCluster);
 		}
 		return cluster;
-	}
-
-	public Iterable<Cluster> getClustersOfMinSize(int minSize) {
-		Set<Cluster> filteredClusters = new HashSet<Cluster>();
-		for (Cluster cluster : this.clusters) {
-			if (minSize <= cluster.size()) {
-				filteredClusters.add(cluster);
-			}
-		}
-		return filteredClusters;
 	}
 }

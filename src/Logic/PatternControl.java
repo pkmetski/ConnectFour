@@ -15,8 +15,9 @@ public class PatternControl {
 	public int playerWithContiguousLineOfSize(Iterable<Cluster> clusters,
 			int minSize) {
 
-		Random rand = new Random();
-		return rand.nextInt(3);
+		return 0;
+		// Random rand = new Random();
+		// return rand.nextInt(3);
 
 		//for each cluster:
 		//sort clusters by x and y
