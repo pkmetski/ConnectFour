@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Comparator;
+
 public class Position {
 
 	private int x;
@@ -57,5 +59,37 @@ public class Position {
 		}
 		Position other = (Position) o;
 		return this.getX() == other.getX() && this.getY() == other.getY();
+	}
+
+	public class XYComparator implements Comparator<Position> {
+		@Override
+		public int compare(Position o1, Position o2) {
+			if (o1.x > o2.x)
+				return 1;
+			else if (o1.x == o2.x) {
+				if (o1.y > o2.y)
+					return 1;
+				else if (o1.y < o2.y)
+					return -1;
+			} else if (o1.x < o2.x)
+				return -1;
+			return 0;
+		}
+	}
+
+	public class YXComparator implements Comparator<Position> {
+		@Override
+		public int compare(Position o1, Position o2) {
+			if (o1.y > o2.y)
+				return 1;
+			else if (o1.y == o2.y) {
+				if (o1.x > o2.x)
+					return 1;
+				else if (o1.x < o2.x)
+					return -1;
+			} else if (o1.y < o2.y)
+				return -1;
+			return 0;
+		}
 	}
 }
