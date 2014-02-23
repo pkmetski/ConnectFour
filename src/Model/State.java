@@ -40,14 +40,14 @@ public class State {
 		this.clusters.add(cluster);
 
 		Set<Cluster> neighbours = ClusterManager.getNeighbouringClusters(
-				cluster, reverseIndex, x, y);
+				cluster, reverseIndex, this.x, y);
 
 		if (0 < neighbours.size()) {
 			ClusterManager.merge(cluster, neighbours, reverseIndex, clusters);
 		}
 	}
 
-	public Iterable<Cluster> getClustersOfMinSize(int minSize) {
+	public Set<Cluster> getClustersOfMinSize(int minSize) {
 		Set<Cluster> filteredClusters = new HashSet<Cluster>();
 		for (Cluster cluster : clusters) {
 			if (minSize <= cluster.size()) {

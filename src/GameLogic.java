@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import Logic.ClusterManager;
 import Logic.PatternControl;
 import Model.Position;
@@ -44,6 +46,7 @@ public class GameLogic implements IGameLogic {
 
 	public int decideNextMove() {
 		// TODO Write your implementation for this method
-		return 0;
+		Random rand = new Random();
+		 return rand.nextInt(x);
 	}
 }
