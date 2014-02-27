@@ -69,6 +69,69 @@ public class PatternControl {
 		// for each point
 	}
 
+	private int finishedgame(Position newPosition, Position[][] gameBoard,
+			int minSize, int BOARD_WIDTH, int BOARD_HEIGHT) {
+		// horizontal
+		int minX = Math.max(newPosition.getX() - 4, 0);
+		int maxX = Math.min(newPosition.getX() + 4, BOARD_WIDTH);
+		int count = 0;
+		for (int i = minX; i < maxX; i++) {
+			if (gameBoard[i][newPosition.getY()].getValue() == newPosition
+					.getValue())
+				count++;
+			else
+				count = 0;
+			if (count == minSize)
+				return newPosition.getValue();
+		}
+		int minY = Math.max(newPosition.getY() - 4, 0);
+		int maxY = Math.min(newPosition.getY() + 4, BOARD_HEIGHT);
+		count = 0;
+		for (int i = minY; i < maxY; i++) {
+			if (gameBoard[newPosition.getX()][i].getValue() == newPosition
+					.getValue())
+				count++;
+			else
+				count = 0;
+			if (count == minSize)
+				return newPosition.getValue();
+		}
+
+		int minSq = Math.max(minX, minY);
+		int maxSq = Math.min(maxX, maxY);
+		int difXY = newPosition.getX() - newPosition.getY();
+		count = 0;
+		for (int i = minSq; i < maxSq; i++) {
+			if (gameBoard[i + difXY][i].getValue() == newPosition.getValue())
+				count++;
+			else
+				count = 0;
+			if (count == minSize)
+				return newPosition.getValue();
+		}
+		// still need to think about it
+		int minSq2 = Math.max(minX, maxY);
+		int maxSq2 = Math.min(maxX, minY);
+		int difXY2 = newPosition.getY() - newPosition.getX();
+		count = 0;
+		for (int i = maxSq2; minSq2 < i; i--) {
+			if (gameBoard[i + difXY2][i].getValue() == newPosition.getValue())
+				count++;
+			else
+				count = 0;
+			if (count == minSize)
+				return newPosition.getValue();
+		}
+
+		Position minPos = new Position(newPosition.getX() - (minSize - 1),
+				newPosition.getY() + (minSize - 1));
+
+		Position maxPos = new Position(newPosition.getX() + (minSize - 1),
+				newPosition.getY() - (minSize - 1));
+		
+		return 0;
+	}
+
 	private Position nextPositionNeeded(Position position, Pattern pattern) {
 		switch (pattern) {
 		case HORIZONTAL:
