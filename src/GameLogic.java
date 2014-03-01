@@ -1,7 +1,9 @@
 import java.util.Random;
 
 import Logic.ClusterManager;
+import Logic.GameTree;
 import Logic.PatternControl;
+import Logic.TransitionController;
 import Model.Position;
 import Model.State;
 
@@ -11,7 +13,8 @@ public class GameLogic implements IGameLogic {
 	private int playerID;
 	private PatternControl pControl;
 	private final int WINNING_SIZE = 4;
-	private State state;
+	private State currentState;
+	private TransitionController transitionController;
 
 	public GameLogic() {
 		// TODO Write your implementation for this method
@@ -22,18 +25,19 @@ public class GameLogic implements IGameLogic {
 		this.y = y;
 		this.playerID = playerID;
 		pControl = new PatternControl();
-		state = new State(x, y);
+		currentState = new State(x, y);
+		transitionController = new TransitionController();
 	}
 
 	public Winner gameFinished() {
 		int result = pControl.playerWithContiguousLineOfSize(
-				state.getClustersOfMinSize(WINNING_SIZE), WINNING_SIZE);
+				currentState.getClustersOfMinSize(WINNING_SIZE), WINNING_SIZE);
 
 		if (result == 1) {
 			return Winner.PLAYER1;
 		} else if (result == 2) {
 			return Winner.PLAYER2;
-		} else if (state.isBoardFull()) {
+		} else if (currentState.isBoardFull()) {
 			return Winner.TIE;
 		} else {
 			return Winner.NOT_FINISHED;
@@ -41,12 +45,15 @@ public class GameLogic implements IGameLogic {
 	}
 
 	public void insertCoin(int x, int playerID) {
-		state.addPosition(x, playerID);
+		currentState = transitionController.transition(currentState, x,
+				playerID);
+		
+		GameTree tree= new GameTree(currentState);
 	}
 
 	public int decideNextMove() {
 		// TODO Write your implementation for this method
 		Random rand = new Random();
-		 return rand.nextInt(x);
+		return rand.nextInt(x);
 	}
 }

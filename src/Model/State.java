@@ -17,22 +17,27 @@ public class State {
 	private Position[][] board;
 	private int[] yPos;
 	private Map<Position, Cluster> reverseIndex;
-	private ArrayList<Cluster> clusters;
+	private Set<Cluster> clusters;
+	private ArrayList<Action> applicableActions;
+	private int playerId;
+	private double value;
 
 	public State(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.reverseIndex = new HashMap<Position, Cluster>();
-		this.clusters = new ArrayList<Cluster>();
+		this.clusters = new HashSet<Cluster>();
 		board = new Position[x][y];
 		yPos = new int[x];
+		applicableActions = new ArrayList<Action>();
 	}
 
-	public ArrayList<Cluster> getClusters() {
+	public Set<Cluster> getClusters() {
 		return clusters;
 	}
 
-	public void addPosition(int x, int playerId) {
+	public void playPosition(int x, int playerId) {
+		this.playerId = playerId;
 		Position position = new Position(x, yPos[x], playerId);
 		board[x][yPos[x]++] = position;
 		Cluster cluster = new Cluster(position);
@@ -64,6 +69,34 @@ public class State {
 			}
 		}
 		return true;
+	}
+
+	public ArrayList<Action> getApplicableActions() {
+		return applicableActions;
+	}
+
+	public void addApplicableAction(Action action) {
+		this.applicableActions.add(action);
+	}
+
+	public int[] getYPos() {
+		return yPos;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getPlayerId() {
+		return this.playerId;
+	}
+
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
 	}
 
 	public State clone() {

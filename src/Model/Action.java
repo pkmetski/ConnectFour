@@ -12,4 +12,8 @@ public class Action {
 		this.oldState = oldState;
 		this.newState = newState;
 	}
+	
+	public State getNewState(){
+		return newState;
+	}
 }

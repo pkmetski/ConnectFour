@@ -1,7 +1,5 @@
 package Logic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +52,7 @@ public class ClusterManager {
 	}
 
 	public static Cluster merge(Cluster cluster, Set<Cluster> neighbours,
-			Map<Position, Cluster> reverseIndex, ArrayList<Cluster> clusters) {
+			Map<Position, Cluster> reverseIndex, Set<Cluster> clusters) {
 		for (Cluster neighbourCluster : neighbours) {
 			cluster.addRange(neighbourCluster);
 			// update the reversed index

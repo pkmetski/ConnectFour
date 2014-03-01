@@ -7,6 +7,7 @@ import java.util.Set;
 
 import Model.Cluster;
 import Model.Position;
+import Model.State;
 
 public class PatternControl {
 
@@ -68,13 +69,76 @@ public class PatternControl {
 		// sort clusters by x and y
 		// for each point
 	}
+	
+	public boolean terminateTest(State state){
+		return playerWithContiguousLineOfSize(state.getClusters(),
+				4) != 0;
+	}
 
 	private int finishedgame(Position newPosition, Position[][] gameBoard,
 			int minSize, int BOARD_WIDTH, int BOARD_HEIGHT) {
+
+		// ////////////////////
+
+		int countH = 0;
+		int countV = 0;
+		int countD = 0;
+		int countDN = 0;
+//		int startPointX=
+		for (int i = 0; i < minSize * 2 - 1; i++) {
+			// hor
+			if (newPosition.getX() - minSize + i >= 0
+					&& newPosition.getX() - minSize + i < BOARD_WIDTH) {
+				if (gameBoard[newPosition.getX() - minSize + i][newPosition
+						.getY()].getValue() == newPosition.getValue())
+					countH++;
+				else
+					countH = 0;
+				if (countH == minSize)
+					return newPosition.getValue();
+			}
+			//ver
+			if (newPosition.getY() - minSize + i >= 0
+					&& newPosition.getY() - minSize + i < BOARD_HEIGHT) {
+				if (gameBoard[newPosition.getX()][newPosition.getY() - minSize
+						+ i].getValue() == newPosition.getValue())
+					countV++;
+				else
+					countV = 0;
+				if (countV == minSize)
+					return newPosition.getValue();
+			}
+			//dia
+			if (newPosition.getY() - minSize + i >= 0&& newPosition.getX() - minSize + i >= 0
+					&& newPosition.getY() - minSize + i < BOARD_HEIGHT && newPosition.getX() - minSize + i < BOARD_WIDTH) {
+				if (gameBoard[newPosition.getX() - minSize + i][newPosition
+						.getY() - minSize + i].getValue() == newPosition
+						.getValue())
+					countD++;
+				else
+					countD = 0;
+				if (countD == minSize)
+					return newPosition.getValue();
+			}
+			//diaN
+			if (newPosition.getY() + minSize - i < BOARD_HEIGHT && newPosition.getX() - minSize + i >= 0
+					&& newPosition.getY() + minSize - i >= 0 && newPosition.getX() - minSize + i < BOARD_WIDTH) {
+				if (gameBoard[newPosition.getX() - minSize + i][newPosition
+						.getY() + minSize - i].getValue() == newPosition
+						.getValue())
+					countDN++;
+				else
+					countDN = 0;
+				if (countDN == minSize)
+					return newPosition.getValue();
+			}
+		}
+
+		// ////////////////////
 		// horizontal
+		int count = 0;
 		int minX = Math.max(newPosition.getX() - 4, 0);
 		int maxX = Math.min(newPosition.getX() + 4, BOARD_WIDTH);
-		int count = 0;
 		for (int i = minX; i < maxX; i++) {
 			if (gameBoard[i][newPosition.getY()].getValue() == newPosition
 					.getValue())
@@ -128,7 +192,7 @@ public class PatternControl {
 
 		Position maxPos = new Position(newPosition.getX() + (minSize - 1),
 				newPosition.getY() - (minSize - 1));
-		
+
 		return 0;
 	}
 
