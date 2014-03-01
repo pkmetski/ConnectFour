@@ -4,6 +4,7 @@ import Logic.ClusterManager;
 import Logic.GameTree;
 import Logic.PatternControl;
 import Logic.TransitionController;
+import Model.Action;
 import Model.Position;
 import Model.State;
 
@@ -15,6 +16,7 @@ public class GameLogic implements IGameLogic {
 	private final int WINNING_SIZE = 4;
 	private State currentState;
 	private TransitionController transitionController;
+	private GameTree tree;
 
 	public GameLogic() {
 		// TODO Write your implementation for this method
@@ -27,6 +29,7 @@ public class GameLogic implements IGameLogic {
 		pControl = new PatternControl();
 		currentState = new State(x, y);
 		transitionController = new TransitionController();
+		tree = new GameTree();
 	}
 
 	public Winner gameFinished() {
@@ -47,13 +50,12 @@ public class GameLogic implements IGameLogic {
 	public void insertCoin(int x, int playerID) {
 		currentState = transitionController.transition(currentState, x,
 				playerID);
-		
-		GameTree tree= new GameTree(currentState);
+
 	}
 
 	public int decideNextMove() {
-		// TODO Write your implementation for this method
-		Random rand = new Random();
-		return rand.nextInt(x);
+		Action ac = tree.Alpha_Beta_Search(currentState);
+		currentState= ac.getNewState();
+		return ac.getColumn();
 	}
 }

@@ -1,23 +1,14 @@
 package Logic;
 
-import java.util.ArrayList;
 import java.util.Random;
-
-import javax.activity.InvalidActivityException;
-import javax.management.InvalidApplicationException;
 
 import Model.Action;
 import Model.State;
 
 public class GameTree {
-	private State root;
-	TransitionController transition = new TransitionController();
+	private TransitionController transition = new TransitionController();
+	private Random rnd = new Random();
 	private PatternControl pControl = new PatternControl();
-
-	public GameTree(State currentState) {
-		this.root = currentState;
-		Alpha_Beta_Search(root);
-	}
 
 	public Action Alpha_Beta_Search(State root) {
 		double v = Max_Value(root, Double.MIN_VALUE, Double.MAX_VALUE, 0);
@@ -37,6 +28,7 @@ public class GameTree {
 			State newState = transition.createChild(a, state);
 			state.addApplicableAction(new Action(a, state, newState));
 			v = Math.max(v, Min_Value(newState, alpha, beta, depth + 1));
+			newState.setValue(v);
 			if (v >= beta) {
 				return v;
 			}
@@ -54,6 +46,7 @@ public class GameTree {
 			State newState = transition.createChild(a, state);
 			state.addApplicableAction(new Action(a, state, newState));
 			v = Math.min(v, Max_Value(newState, alpha, beta, depth + 1));
+			newState.setValue(v);
 			if (v <= alpha) {
 				return v;
 			}
@@ -67,7 +60,6 @@ public class GameTree {
 	}
 
 	private double eval(State state) {
-		Random rnd = new Random();
-		return rnd.nextInt(5);
+		return rnd.nextInt(50);
 	}
 }

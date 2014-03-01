@@ -12,8 +12,12 @@ public class Action {
 		this.oldState = oldState;
 		this.newState = newState;
 	}
-	
-	public State getNewState(){
+
+	public State getNewState() {
 		return newState;
+	}
+
+	public int getColumn() {
+		return column;
 	}
 }
