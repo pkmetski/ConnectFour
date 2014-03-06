@@ -1,11 +1,7 @@
-import java.util.Random;
-
-import Logic.ClusterManager;
 import Logic.GameTree;
 import Logic.PatternControl;
 import Logic.TransitionController;
 import Model.Action;
-import Model.Position;
 import Model.State;
 
 public class GameLogic implements IGameLogic {
@@ -27,15 +23,15 @@ public class GameLogic implements IGameLogic {
 		this.y = y;
 		this.playerID = playerID;
 		pControl = new PatternControl();
-		currentState = new State(x, y);
+		currentState = new State(new int[x][y], new int[x]);
 		transitionController = new TransitionController();
 		tree = new GameTree();
 	}
 
 	public Winner gameFinished() {
-		int result = pControl.playerWithContiguousLineOfSize(
-				currentState.getClustersOfMinSize(WINNING_SIZE), WINNING_SIZE);
-
+		int result = pControl.finishedgame(currentState.getLastX(),
+				currentState.getLastY(currentState.getLastX()),
+				currentState.getBoard(), WINNING_SIZE);
 		if (result == 1) {
 			return Winner.PLAYER1;
 		} else if (result == 2) {
@@ -48,14 +44,11 @@ public class GameLogic implements IGameLogic {
 	}
 
 	public void insertCoin(int x, int playerID) {
-		currentState = transitionController.transition(currentState, x,
-				playerID);
-
+		transitionController.transition(currentState, x, playerID);
 	}
 
 	public int decideNextMove() {
 		Action ac = tree.Alpha_Beta_Search(currentState);
-		currentState= ac.getNewState();
 		return ac.getColumn();
 	}
 }
