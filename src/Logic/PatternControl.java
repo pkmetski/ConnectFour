@@ -1,10 +1,5 @@
 package Logic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 import Model.State;
 
 public class PatternControl {
@@ -13,218 +8,187 @@ public class PatternControl {
 		HORIZONTAL, VERTICAL, DIAGONALPOS, DIAGONALNEG
 	};
 
-	// public int playerWithContiguousLineOfSize(Set<Cluster> clusters, int
-	// minSize) {
-	// if (clusters.isEmpty())
-	// return 0;
-	// for (Cluster cluster : clusters) {
-	// Set<Position> positions = cluster.getPositions();
-	// List<Position> verticalList = sortPositionsByXY(positions);
-	// for (Position pos : verticalList) {
-	// int count = 1;
-	// for (int i = 1; i < minSize; i++) {
-	// pos = nextPositionNeeded(pos, Pattern.VERTICAL);
-	// if (verticalList.contains(pos))
-	// count++;
-	// }
-	// if (count == 4)
-	// return pos.getValue();
-	// }
-	// List<Position> horizontalList = sortPositionsByYX(positions);
-	// for (Position pos : horizontalList) {
-	// int count = 1;
-	// for (int i = 1; i < minSize; i++) {
-	// pos = nextPositionNeeded(pos, Pattern.HORIZONTAL);
-	// if (horizontalList.contains(pos))
-	// count++;
-	// }
-	// if (count == 4)
-	// return pos.getValue();
-	// }
-	// for (Position pos : horizontalList) {
-	// int count = 1;
-	// for (int i = 1; i < minSize; i++) {
-	// pos = nextPositionNeeded(pos, Pattern.DIAGONALPOS);
-	// if (horizontalList.contains(pos))
-	// count++;
-	// }
-	// if (count == 4)
-	// return pos.getValue();
-	// }
-	// for (Position pos : horizontalList) {
-	// int count = 1;
-	// for (int i = 1; i < minSize; i++) {
-	// pos = nextPositionNeeded(pos, Pattern.DIAGONALNEG);
-	// if (horizontalList.contains(pos))
-	// count++;
-	// }
-	// if (count == 4)
-	// return pos.getValue();
-	// }
-	// }
-	// return 0;
-	//
-	// // for each cluster:
-	// // sort clusters by x and y
-	// // for each point
-	// }
-
 	public boolean terminateTest(State state) {
-		return finishedgame(state.getLastX(),
-				state.getLastY(state.getLastX()), state.getBoard(), 4) != 0;
+		return finishedgame(state, 4) != 0;
 	}
 
-	public int finishedgame(int x, int y, int[][] gameBoard, int minSize) {
-
-		// ////////////////////
-
-		int playerId = gameBoard[x][y];
-		int countH = 0;
-		int countV = 0;
-		int countD = 0;
-		int countDN = 0;
-		// int startPointX=
+	public int finishedgame(State state, int minSize) {
+		int countH = 0, countV = 0, countD = 0, countDN = 0, y = state
+				.getLastY(state.getLastX()), startPointX = state.getLastX()
+				- minSize, startPointY = y - minSize;
 		for (int i = 1; i < minSize * 2; i++) {
 			// hor
-			if (x - minSize + i >= 0 && x - minSize + i < gameBoard.length) {
-				if (gameBoard[x - minSize + i][y] == playerId)
+			if (startPointX + i >= 0 && startPointX + i < state.getX()) {
+				if (state.getBoard()[startPointX + i][y] == state.getPlayerId())
 					countH++;
 				else
 					countH = 0;
 				if (countH == minSize)
-					return playerId;
+					return state.getPlayerId();
 			}
 			// ver
-			if (y - minSize + i >= 0 && y - minSize + i < gameBoard[0].length) {
-				if (gameBoard[x][y - minSize + i] == playerId)
+			if (startPointY + i >= 0 && startPointY + i < state.getY()) {
+				if (state.getBoard()[state.getLastX()][startPointY + i] == state
+						.getPlayerId())
 					countV++;
 				else
 					countV = 0;
 				if (countV == minSize)
-					return playerId;
+					return state.getPlayerId();
 			}
 			// dia
-			if (y - minSize + i >= 0 && x - minSize + i >= 0
-					&& y - minSize + i < gameBoard[0].length
-					&& x - minSize + i < gameBoard.length) {
-				if (gameBoard[x - minSize + i][y - minSize + i] == playerId)
+			if (startPointY + i >= 0 && startPointX + i >= 0
+					&& startPointY + i < state.getY()
+					&& startPointX + i < state.getX()) {
+				if (state.getBoard()[startPointX + i][startPointY + i] == state
+						.getPlayerId())
 					countD++;
 				else
 					countD = 0;
 				if (countD == minSize)
-					return playerId;
+					return state.getPlayerId();
 			}
 			// diaN
-			if (y + minSize - i < gameBoard[0].length && x - minSize + i >= 0
-					&& y + minSize - i >= 0
-					&& x - minSize + i < gameBoard.length) {
-				if (gameBoard[x - minSize + i][y + minSize - i] == playerId)
+			if (y + minSize - i < state.getY() && startPointX + i >= 0
+					&& y + minSize - i >= 0 && startPointX + i < state.getX()) {
+				if (state.getBoard()[startPointX + i][y + minSize - i] == state
+						.getPlayerId())
 					countDN++;
 				else
 					countDN = 0;
 				if (countDN == minSize)
-					return playerId;
+					return state.getPlayerId();
 			}
 		}
 
 		return 0;
-
-		// ////////////////////
-		// horizontal
-		// int count = 0;
-		// int minX = Math.max(newPosition.getX() - 4, 0);
-		// int maxX = Math.min(newPosition.getX() + 4, BOARD_WIDTH);
-		// for (int i = minX; i < maxX; i++) {
-		// if (gameBoard[i][newPosition.getY()].getValue() == newPosition
-		// .getValue())
-		// count++;
-		// else
-		// count = 0;
-		// if (count == minSize)
-		// return newPosition.getValue();
-		// }
-		// int minY = Math.max(newPosition.getY() - 4, 0);
-		// int maxY = Math.min(newPosition.getY() + 4, BOARD_HEIGHT);
-		// count = 0;
-		// for (int i = minY; i < maxY; i++) {
-		// if (gameBoard[newPosition.getX()][i].getValue() == newPosition
-		// .getValue())
-		// count++;
-		// else
-		// count = 0;
-		// if (count == minSize)
-		// return newPosition.getValue();
-		// }
-		//
-		// int minSq = Math.max(minX, minY);
-		// int maxSq = Math.min(maxX, maxY);
-		// int difXY = newPosition.getX() - newPosition.getY();
-		// count = 0;
-		// for (int i = minSq; i < maxSq; i++) {
-		// if (gameBoard[i + difXY][i].getValue() == newPosition.getValue())
-		// count++;
-		// else
-		// count = 0;
-		// if (count == minSize)
-		// return newPosition.getValue();
-		// }
-		// // still need to think about it
-		// int minSq2 = Math.max(minX, maxY);
-		// int maxSq2 = Math.min(maxX, minY);
-		// int difXY2 = newPosition.getY() - newPosition.getX();
-		// count = 0;
-		// for (int i = maxSq2; minSq2 < i; i--) {
-		// if (gameBoard[i + difXY2][i].getValue() == newPosition.getValue())
-		// count++;
-		// else
-		// count = 0;
-		// if (count == minSize)
-		// return newPosition.getValue();
-		// }
-		//
-		// Position minPos = new Position(newPosition.getX() - (minSize - 1),
-		// newPosition.getY() + (minSize - 1));
-		//
-		// Position maxPos = new Position(newPosition.getX() + (minSize - 1),
-		// newPosition.getY() - (minSize - 1));
-		//
-		// return 0;
 	}
-	//
-	// private Position nextPositionNeeded(Position position, Pattern pattern) {
-	// switch (pattern) {
-	// case HORIZONTAL:
-	// return new Position(position.getX() + 1, position.getY(),
-	// position.getValue());
-	// case VERTICAL:
-	// return new Position(position.getX(), position.getY() + 1,
-	// position.getValue());
-	// case DIAGONALPOS:
-	// return new Position(position.getX() + 1, position.getY() + 1,
-	// position.getValue());
-	// case DIAGONALNEG:
-	// return new Position(position.getX() + 1, position.getY() - 1,
-	// position.getValue());
-	// default:
-	// return position;
+
+	public double verHeuristic(State state, int minSize) {
+		int count = 0;
+		for (int j = state.getLastY(state.getLastX()); j >= 0; j--) {
+			if (state.getBoard()[state.getLastX()][j] == state.getPlayerId())
+				count++;
+			else
+				break;
+		}
+		if (state.getY() - state.getLastY(state.getLastX()) > minSize - count) {
+			if (count == 3)
+				return 32;
+			else if (count == 2)
+				return 4;
+			else if (count == 1)
+				return 1;
+			else if (count == 4)
+				return Double.MAX_VALUE;
+		}
+		return 0;
+	}
+
+	private double horHeuristic(State state, int minSize) {
+		int count = 0, total = 0, y = state.getLastY(state.getLastX());
+		int OpIdPlayer = state.getPlayerId() == 1 ? 2 : 1;
+		for (int i = Math.max(0, state.getLastX() - minSize); i < state
+				.getLastX(); i++) {
+			for (int j = 0; j < minSize; j++) {
+				if (state.getBoard()[i + j][y] == OpIdPlayer)
+					break;
+				else
+					count++;
+				if (j == minSize - 1) {
+					// we need to check if they are next to each other for two
+					// token. next to each other return 4 else return 2
+					if (count == 3)
+						total += 32;
+					else if (count == 2)
+						total += 4;
+					else if (count == 1)
+						total += 1;
+					else if (count == 4)
+						return Double.MAX_VALUE;
+				}
+			}
+			count = 0;
+		}
+		return total;
+	}
+	// public double verCounter(State state, int minSize) {
+	// int total = 0, count = 0;
+	// for (int i = 0; i < state.getX(); i++) {
+	// for (int j = state.getLastY(i); j >= 0; j--) {
+	// if (state.getBoard()[i][j] == state.getBoard()[i][state
+	// .getLastY(i)]) {
+	// if (state.getBoard()[i][j] == state.getPlayerId())
+	// count++;
+	// else {
+	// count--;
+	// }
+	// } else {
+	// break;
 	// }
 	// }
+	// if (state.getY() - state.getLastY(i) > minSize - count) {
+	// if (count > 1)
+	// total += Math.pow(2, count);
+	// else if (count < -1)
+	// total += Math.pow(2, Math.abs(count));
+	// else
+	// total += count;
+	// }
+	// count = 0;
+	// }
+	// return total;
+	// }
+
+	// public double verCounterPos(State state, int minSize) {
+	// int total = 0, count = 0;
+	// for (int i = 0; i < state.getX(); i++) {
+	// for (int j = state.getLastY(i); j >= 0; j--) {
+	// if (state.getBoard()[i][j] == state.getPlayerId())
+	// count++;
+	// else {
+	// break;
+	// }
+	// }
+	// if (state.getY() - state.getLastY(i) > minSize - count) {
+	// if (count > 1)
+	// total += Math.pow(2, count);
+	// else
+	// total += count;
+	// } else if(state.getBoard()[i][state.getLastY(i)]==state.getPlayerId())
+	// total += -64;
+	// count = 0;
+	// }
+	// return total;
+	// }
+
+	// public int horCounter(State state, int minSize) {
+	// for (int i = 0; i < state.getX() - minSize; i++) {
+	// for (int j = 0; j < state.getLastY(i); j++) {
 	//
-	// private List<Position> sortPositionsByXY(Set<Position> positions) {
-	//
-	// List<Position> list = new ArrayList<Position>();
-	// list.addAll(positions);
-	// Position.XYComparator comparator = new Position(0, 0).new XYComparator();
-	// Collections.sort(list, comparator);
-	// return list;
+	// }
+	// }
+	// return -1;
 	// }
 	//
-	// private List<Position> sortPositionsByYX(Set<Position> positions) {
-	//
-	// List<Position> list = new ArrayList<Position>();
-	// list.addAll(positions);
-	// Position.YXComparator comparator = new Position(0, 0).new YXComparator();
-	// Collections.sort(list, comparator);
-	// return list;
+	// private int evalFour(State state, int x, int y, Pattern pattern) {
+	// int count = 0;
+	// if (pattern == Pattern.HORIZONTAL) {
+	// for (int i = 0; i < 4; i++) {
+	// if (state.getBoard()[x + i][y] == 1)
+	// return 0;
+	// if (state.getBoard()[x + i][y] == 2)
+	// count++;
+	// }
+	// }
+	// // if (pattern == Pattern.VERTICAL) {
+	// // for (int i = 0; i < 4; i++) {
+	// // if (state.getBoard()[x][y + i] == 1)
+	// // return 0;
+	// // if (state.getBoard()[x][y + i] == 2)
+	// // count++;
+	// // }
+	// // }
+	// return count;
 	// }
 }

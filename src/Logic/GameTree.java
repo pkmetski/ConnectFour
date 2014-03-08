@@ -1,39 +1,34 @@
 package Logic;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-import Model.Action;
 import Model.State;
 
 public class GameTree {
 	private TransitionController transition = new TransitionController();
 	private Random rnd = new Random();
 	private PatternControl pControl = new PatternControl();
-	private ArrayList<Action> applicableActions;
+	private Map<Double, Integer> applicableActions;
 
-	public Action Alpha_Beta_Search(State root) {
-		applicableActions=new ArrayList<Action>();
-		double v = Max_Value(root, Double.MIN_VALUE, Double.MAX_VALUE, 0);
-		for (Action action : applicableActions) {
-			if (action.getNewState().getValue() == v)
-				return action;
-		}
-		return null;
+	public int Alpha_Beta_Search(State root) {
+		applicableActions= new HashMap<Double, Integer>();
+		return applicableActions.get(Max_Value(root, Double.MIN_VALUE, Double.MAX_VALUE, 0));
 	}
 
 	public double Max_Value(State state, double alpha, double beta, int depth) {
-		if (cutOff(depth, state) || pControl.terminateTest(state)) {
+		if (cutOff(depth, state)) {
 			return eval(state);
 		}
 		double v = Double.MIN_VALUE;
 		for (int a : transition.getAvailableColumns(state)) {
 			State newState = transition.createChild(a, state);
-			if (depth == 0)
-				applicableActions.add(new Action(a, newState));
 			v = Math.max(v, Min_Value(newState, alpha, beta, depth + 1));
 			newState.setValue(v);
+			if (depth == 0 && !applicableActions.containsKey(v)) {
+				applicableActions.put(v, a);
+			}
 			if (v >= beta) {
 				return v;
 			}
@@ -43,7 +38,7 @@ public class GameTree {
 	}
 
 	public double Min_Value(State state, double alpha, double beta, int depth) {
-		if (cutOff(depth, state) || pControl.terminateTest(state)) {
+		if (cutOff(depth, state)) {
 			return eval(state);
 		}
 		double v = Double.MAX_VALUE;
@@ -60,11 +55,14 @@ public class GameTree {
 	}
 
 	private boolean cutOff(int depth, State state) {
-		return depth >= 5 || state.isBoardFull();
+		return depth >= 1 || state.isBoardFull() || pControl.terminateTest(state);
 	}
 
 	private double eval(State state) {
-		int asda = rnd.nextInt(50);
-		return asda;
+		double winner= pControl.finishedgame(state, 4);
+		if(winner==2) return Double.MAX_VALUE;
+		if(winner==1) return Double.MIN_VALUE;
+		return pControl.verHeuristic(state, 4);
+//		return rnd.nextInt(50);
 	}
 }

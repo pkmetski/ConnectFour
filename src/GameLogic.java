@@ -1,7 +1,6 @@
 import Logic.GameTree;
 import Logic.PatternControl;
 import Logic.TransitionController;
-import Model.Action;
 import Model.State;
 
 public class GameLogic implements IGameLogic {
@@ -29,9 +28,7 @@ public class GameLogic implements IGameLogic {
 	}
 
 	public Winner gameFinished() {
-		int result = pControl.finishedgame(currentState.getLastX(),
-				currentState.getLastY(currentState.getLastX()),
-				currentState.getBoard(), WINNING_SIZE);
+		int result = pControl.finishedgame(currentState, WINNING_SIZE);
 		if (result == 1) {
 			return Winner.PLAYER1;
 		} else if (result == 2) {
@@ -48,7 +45,6 @@ public class GameLogic implements IGameLogic {
 	}
 
 	public int decideNextMove() {
-		Action ac = tree.Alpha_Beta_Search(currentState);
-		return ac.getColumn();
+		return tree.Alpha_Beta_Search(currentState);
 	}
 }

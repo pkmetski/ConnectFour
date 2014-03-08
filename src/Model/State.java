@@ -69,7 +69,7 @@ public class State {
 	@Override
 	public State clone() {
 		int[] newYPos = new int[yPos.length];
-		System.arraycopy(yPos, 0, newYPos, 0, this.getY());
+		System.arraycopy(yPos, 0, newYPos, 0, this.getX());
 
 		int[][] newBoard = new int[this.getX()][this.getY()];
 		for (int i = 0; i < this.getX(); i++) {
