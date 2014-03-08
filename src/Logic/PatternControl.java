@@ -80,7 +80,7 @@ public class PatternControl {
 			else if (count == 1)
 				return 1;
 			else if (count == 4)
-				return Double.MAX_VALUE;
+				return Double.POSITIVE_INFINITY;
 		}
 		return 0;
 	}
@@ -88,8 +88,10 @@ public class PatternControl {
 	private double horHeuristic(State state, int minSize) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
 		int OpIdPlayer = state.getPlayerId() == 1 ? 2 : 1;
-		for (int i = Math.max(0, state.getLastX() - minSize); i < state
-				.getLastX(); i++) {
+		int maxBound = Math.min(state.getX(), state.getLastX() + minSize)
+				- minSize + 1;
+		int minBound = Math.max(0, state.getLastX() - minSize + 1);
+		for (int i = minBound; i <= maxBound; i++) {
 			for (int j = 0; j < minSize; j++) {
 				if (state.getBoard()[i + j][y] == OpIdPlayer)
 					break;
@@ -104,8 +106,8 @@ public class PatternControl {
 						total += 4;
 					else if (count == 1)
 						total += 1;
-					else if (count == 4)
-						return Double.MAX_VALUE;
+					else if (count == minSize)
+						return Double.POSITIVE_INFINITY;
 				}
 			}
 			count = 0;

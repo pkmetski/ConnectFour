@@ -60,8 +60,8 @@ public class GameTree {
 
 	private double eval(State state) {
 		double winner= pControl.finishedgame(state, 4);
-		if(winner==2) return Double.MAX_VALUE;
-		if(winner==1) return Double.MIN_VALUE;
+		if(winner==2) return Double.POSITIVE_INFINITY;
+		if(winner==1) return Double.NEGATIVE_INFINITY;
 		return pControl.verHeuristic(state, 4);
 //		return rnd.nextInt(50);
 	}
