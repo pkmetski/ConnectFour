@@ -24,7 +24,7 @@ public class GameLogic implements IGameLogic {
 		pControl = new PatternControl();
 		currentState = new State(new int[x][y], new int[x]);
 		transitionController = new TransitionController();
-		tree = new GameTree();
+		tree = new GameTree(playerID);
 	}
 
 	public Winner gameFinished() {

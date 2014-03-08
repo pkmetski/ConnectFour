@@ -8,10 +8,6 @@ public class PatternControl {
 		HORIZONTAL, VERTICAL, DIAGONALPOS, DIAGONALNEG
 	};
 
-	public boolean terminateTest(State state) {
-		return finishedgame(state, 4) != 0;
-	}
-
 	public int finishedgame(State state, int minSize) {
 		int countH = 0, countV = 0, countD = 0, countDN = 0, y = state
 				.getLastY(state.getLastX()), startPointX = state.getLastX()
@@ -64,7 +60,7 @@ public class PatternControl {
 		return 0;
 	}
 
-	public double verHeuristic(State state, int minSize) {
+	public double verHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0;
 		for (int j = state.getLastY(state.getLastX()); j >= 0; j--) {
 			if (state.getBoard()[state.getLastX()][j] == state.getPlayerId())
@@ -85,15 +81,40 @@ public class PatternControl {
 		return 0;
 	}
 
-	private double horHeuristic(State state, int minSize) {
+	public double verHeuristicOp(State state, int minSize, int aiPlayerID) {
+		int count = 0, total = 0;
+		int humanPlayerID = aiPlayerID == 1 ? 2 : 1;
+		for (int i = 0; i < state.getX(); i++) {
+			for (int j = state.getLastY(i); j >= 0; j--) {
+				if (state.getBoard()[i][j] == humanPlayerID)
+					count++;
+				else
+					break;
+			}
+			if (state.getY() - state.getLastY(state.getLastX()) > minSize
+					- count) {
+				if (count == 3)
+					return Double.MIN_NORMAL;
+				if (count == 2)
+					total += -4;
+				else if (count == 1)
+					total += -1;
+				else if (count == 4)
+					return Double.MIN_NORMAL;
+			}
+			count = 0;
+		}
+		return total;
+	}
+
+	private double horHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
-		int OpIdPlayer = state.getPlayerId() == 1 ? 2 : 1;
 		int maxBound = Math.min(state.getX(), state.getLastX() + minSize)
 				- minSize + 1;
 		int minBound = Math.max(0, state.getLastX() - minSize + 1);
 		for (int i = minBound; i <= maxBound; i++) {
 			for (int j = 0; j < minSize; j++) {
-				if (state.getBoard()[i + j][y] == OpIdPlayer)
+				if (state.getBoard()[i + j][y] == aiPlayerID)
 					break;
 				else
 					count++;

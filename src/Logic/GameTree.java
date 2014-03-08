@@ -11,15 +11,24 @@ public class GameTree {
 	private Random rnd = new Random();
 	private PatternControl pControl = new PatternControl();
 	private Map<Double, Integer> applicableActions;
+	private int AIplayerID;
+	private int Depth = 1;
+
+	public GameTree(int playerID) {
+		this.AIplayerID = playerID;
+	}
 
 	public int Alpha_Beta_Search(State root) {
-		applicableActions= new HashMap<Double, Integer>();
-		return applicableActions.get(Max_Value(root, Double.MIN_VALUE, Double.MAX_VALUE, 0));
+		applicableActions = new HashMap<Double, Integer>();
+		return applicableActions.get(Max_Value(root, Double.MIN_VALUE,
+				Double.MAX_VALUE, 0));
 	}
 
 	public double Max_Value(State state, double alpha, double beta, int depth) {
-		if (cutOff(depth, state)) {
-			return eval(state);
+		int winner = pControl.finishedgame(state, 4);
+		boolean tie = state.isBoardFull();
+		if (depth >= Depth || tie || winner != 0) {
+			return eval(state, winner, tie);
 		}
 		double v = Double.MIN_VALUE;
 		for (int a : transition.getAvailableColumns(state)) {
@@ -38,8 +47,10 @@ public class GameTree {
 	}
 
 	public double Min_Value(State state, double alpha, double beta, int depth) {
-		if (cutOff(depth, state)) {
-			return eval(state);
+		int winner = pControl.finishedgame(state, 4);
+		boolean tie = state.isBoardFull();
+		if (depth >= Depth || tie || winner != 0) {
+			return eval(state, winner, tie);
 		}
 		double v = Double.MAX_VALUE;
 		for (int a : transition.getAvailableColumns(state)) {
@@ -54,15 +65,16 @@ public class GameTree {
 		return v;
 	}
 
-	private boolean cutOff(int depth, State state) {
-		return depth >= 1 || state.isBoardFull() || pControl.terminateTest(state);
-	}
-
-	private double eval(State state) {
-		double winner= pControl.finishedgame(state, 4);
-		if(winner==2) return Double.POSITIVE_INFINITY;
-		if(winner==1) return Double.NEGATIVE_INFINITY;
-		return pControl.verHeuristic(state, 4);
-//		return rnd.nextInt(50);
+	private double eval(State state, int winner, boolean tie) {
+		if (winner == this.AIplayerID)
+			return Double.POSITIVE_INFINITY;
+		if (winner != this.AIplayerID && winner > 0)
+			return Double.NEGATIVE_INFINITY;
+		if (tie)
+			return 0;
+		double sfd = pControl.verHeuristic(state, 4, AIplayerID);
+		double sfasdf = pControl.verHeuristicOp(state, 4, AIplayerID);
+		return sfd + sfasdf;
+		// return rnd.nextInt(50);
 	}
 }
