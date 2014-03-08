@@ -45,6 +45,8 @@ public class GameLogic implements IGameLogic {
 	}
 
 	public int decideNextMove() {
+		if(currentState.isBoardEmpty())
+			return currentState.getX()/2;
 		return tree.Alpha_Beta_Search(currentState);
 	}
 }

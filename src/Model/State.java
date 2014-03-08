@@ -8,7 +8,7 @@ public class State {
 	private int[] yPos;
 	private int playerId;
 	private double value;
-	private int lastX;
+	private int lastX=0;
 
 	public State(int[][] board, int[] yPos) {
 		this.board = board;
@@ -24,6 +24,15 @@ public class State {
 	public boolean isBoardFull() {
 		for (int i = 0; i < yPos.length; i++) {
 			if (yPos[i] < getY()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean isBoardEmpty() {
+		for (int i = 0; i < yPos.length; i++) {
+			if (yPos[i] != 0) {
 				return false;
 			}
 		}
