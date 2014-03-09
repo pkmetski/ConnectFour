@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 //this represents a node of the game tree
 public class State {
-	private int[][] board;
+	private byte[][] board;
 	private int[] yPos;
 	private int playerId;
 	private double value;
 	private int lastX=0;
 
-	public State(int[][] board, int[] yPos) {
+	public State(byte[][] board, int[] yPos) {
 		this.board = board;
 		this.yPos = yPos;
 	}
@@ -18,7 +18,7 @@ public class State {
 	public void playPosition(int x, int playerId) {
 		this.lastX = x;
 		this.playerId = playerId;
-		board[x][yPos[x]++] = playerId;
+		board[x][yPos[x]++] =(byte) playerId;
 	}
 
 	public boolean isBoardFull() {
@@ -59,7 +59,7 @@ public class State {
 		return this.lastX;
 	}
 
-	public int[][] getBoard() {
+	public byte[][] getBoard() {
 		return this.board;
 	}
 
@@ -80,7 +80,7 @@ public class State {
 		int[] newYPos = new int[yPos.length];
 		System.arraycopy(yPos, 0, newYPos, 0, this.getX());
 
-		int[][] newBoard = new int[this.getX()][this.getY()];
+		byte[][] newBoard = new byte[this.getX()][this.getY()];
 		for (int i = 0; i < this.getX(); i++) {
 			System.arraycopy(this.board[i], 0, newBoard[i], 0, this.getY());
 		}

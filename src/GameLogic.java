@@ -22,7 +22,7 @@ public class GameLogic implements IGameLogic {
 		this.y = y;
 		this.playerID = playerID;
 		pControl = new PatternControl();
-		currentState = new State(new int[x][y], new int[x]);
+		currentState = new State(new byte[x][y], new int[x]);
 		transitionController = new TransitionController();
 		tree = new GameTree(playerID);
 	}
