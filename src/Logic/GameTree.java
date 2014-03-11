@@ -23,7 +23,7 @@ public class GameTree {
 	public int Alpha_Beta_Search(State root) {
 		applicableActions = new HashMap<Double, Integer>();
 		applicableActions1 = new ArrayList<Double>();
-		pControl.clearStateDataBase();
+//		pControl.clearStateDataBase();
 		double v = Max_Value(root, Double.MIN_VALUE, Double.MAX_VALUE, 0);
 		return applicableActions.get(v);
 	}

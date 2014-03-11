@@ -10,27 +10,28 @@ import Model.State;
 public class PatternControl {
 
 	private Map<Integer, Double> stateDataBase;
-	
-	public void clearStateDataBase(){
+
+	public void clearStateDataBase() {
 		stateDataBase = new HashMap<Integer, Double>();
 	}
-	
+
 	public double fastHeuristic(State newState, int minSize, int aiPlayerID) {
-//		long startTime = System.nanoTime();
-		int hash = Arrays.deepHashCode(newState.getBoard());
-//		long endTime = System.nanoTime();
-//		long duration = endTime - startTime;
-//		System.out.println("hash: "+duration); 
-		
-		if (stateDataBase.containsKey(hash))
-			return stateDataBase.get(hash);
-//		long startTime2 = System.nanoTime();
-		double heuristic = Heuristic(newState, minSize, aiPlayerID);
-//		long endTime2 = System.nanoTime();
-//		long duration2 = endTime2 - startTime2;
-//		System.out.println("heuristic: "+duration2); 
-		stateDataBase.put(hash, heuristic);
-		return heuristic;
+		// // long startTime = System.nanoTime();
+		// int hash = Arrays.deepHashCode(newState.getBoard());
+		// // long endTime = System.nanoTime();
+		// // long duration = endTime - startTime;
+		// // System.out.println("hash: "+duration);
+		//
+		// if (stateDataBase.containsKey(hash))
+		// return stateDataBase.get(hash);
+		// // long startTime2 = System.nanoTime();
+		// double heuristic = Heuristic(newState, minSize, aiPlayerID);
+		// // long endTime2 = System.nanoTime();
+		// // long duration2 = endTime2 - startTime2;
+		// // System.out.println("heuristic: "+duration2);
+		// stateDataBase.put(hash, heuristic);
+		// return heuristic;
+		return Heuristic(newState, minSize, aiPlayerID);
 	}
 
 	public int finishedgame(State state, int minSize) {
@@ -90,7 +91,7 @@ public class PatternControl {
 				+ horHeuristic(state, minSize, aiPlayerID)
 				+ diaPosHeuristic(state, minSize, aiPlayerID)
 				+ diaNegHeuristic(state, minSize, aiPlayerID);
-//		return newHeu(state, minSize, aiPlayerID);
+		// return newHeu(state, minSize, aiPlayerID);
 	}
 
 	private double verHeuristic(State state, int minSize, int aiPlayerID) {
@@ -202,47 +203,47 @@ public class PatternControl {
 		return total;
 	}
 
-//	public double newHeu(State state, int minSize, int aiPlayerID) {
-//		int rows = state.getY();
-//		int cols = state.getX();
-//		double eval = 0;
-//		for (int row = 0; row < rows; row++) {
-//			for (int column = 0; column < cols - 5; column++) {
-//				if (row % 2 == 0)
-//				// _XXX_
-//				{
-//					if (state.getBoard()[row][column] == 0
-//							&& state.getBoard()[row][column + 1] == 1
-//							&& state.getBoard()[row][column + 1] == state
-//									.getBoard()[row][column + 2]
-//							&& state.getBoard()[row][column + 2] == state
-//									.getBoard()[row][column + 3]
-//							&& state.getBoard()[row][column + 4] == 0) {
-//						eval = -999;
-//					}
-//
-//					// X_XX_
-//					if (state.getBoard()[row][column] == 1
-//							&& state.getBoard()[row][column + 1] == 0
-//							&& state.getBoard()[row][column] == state
-//									.getBoard()[row][column + 2]
-//							&& state.getBoard()[row][column] == state
-//									.getBoard()[row][column + 3]
-//							&& state.getBoard()[row][column + 4] == 0) {
-//						eval = -900;
-//					}
-//					// XX_X_
-//					if (state.getBoard()[row][column] == 1
-//							&& state.getBoard()[row][column + 1] == 1
-//							&& state.getBoard()[row][column + 2] == 0
-//							&& state.getBoard()[row][column] == state
-//									.getBoard()[row][column + 3]
-//							&& state.getBoard()[row][column + 4] == 0) {
-//						eval = -900;
-//					}
-//				}
-//			}
-//		}
-//		return eval;
-//	}
+	// public double newHeu(State state, int minSize, int aiPlayerID) {
+	// int rows = state.getY();
+	// int cols = state.getX();
+	// double eval = 0;
+	// for (int row = 0; row < rows; row++) {
+	// for (int column = 0; column < cols - 5; column++) {
+	// if (row % 2 == 0)
+	// // _XXX_
+	// {
+	// if (state.getBoard()[row][column] == 0
+	// && state.getBoard()[row][column + 1] == 1
+	// && state.getBoard()[row][column + 1] == state
+	// .getBoard()[row][column + 2]
+	// && state.getBoard()[row][column + 2] == state
+	// .getBoard()[row][column + 3]
+	// && state.getBoard()[row][column + 4] == 0) {
+	// eval = -999;
+	// }
+	//
+	// // X_XX_
+	// if (state.getBoard()[row][column] == 1
+	// && state.getBoard()[row][column + 1] == 0
+	// && state.getBoard()[row][column] == state
+	// .getBoard()[row][column + 2]
+	// && state.getBoard()[row][column] == state
+	// .getBoard()[row][column + 3]
+	// && state.getBoard()[row][column + 4] == 0) {
+	// eval = -900;
+	// }
+	// // XX_X_
+	// if (state.getBoard()[row][column] == 1
+	// && state.getBoard()[row][column + 1] == 1
+	// && state.getBoard()[row][column + 2] == 0
+	// && state.getBoard()[row][column] == state
+	// .getBoard()[row][column + 3]
+	// && state.getBoard()[row][column + 4] == 0) {
+	// eval = -900;
+	// }
+	// }
+	// }
+	// }
+	// return eval;
+	// }
 }
