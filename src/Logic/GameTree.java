@@ -80,11 +80,12 @@ public class GameTree {
 	private double eval(State state, int winner, boolean tie, int depth) {
 		if (winner == this.AIplayerID)
 			return 512 - depth * 5;
-		if (winner != this.AIplayerID && winner > 0)
+		else if (winner != this.AIplayerID && winner > 0)
 			return -512 + depth * 5;
-		if (tie)
+		else if (tie)
 			return 0;
-		return pControl.fastHeuristic(state, 4, AIplayerID);
+		else
+			return pControl.fastHeuristic(state, 4, AIplayerID);
 		// return pControl.Heuristic(state, 4, AIplayerID);
 	}
 }
