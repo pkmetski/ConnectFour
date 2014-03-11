@@ -4,23 +4,13 @@ import Logic.TransitionController;
 import Model.State;
 
 public class TheByteCrunchers implements IGameLogic {
-	private int x = 0;
-	private int y = 0;
-	private int playerID;
 	private PatternControl pControl;
 	private final int WINNING_SIZE = 4;
 	private State currentState;
 	private TransitionController transitionController;
 	private GameTree tree;
 
-	public TheByteCrunchers() {
-		// TODO Write your implementation for this method
-	}
-
 	public void initializeGame(int x, int y, int playerID) {
-		this.x = x;
-		this.y = y;
-		this.playerID = playerID;
 		pControl = new PatternControl();
 		currentState = new State(new byte[x][y], new int[x]);
 		transitionController = new TransitionController();
