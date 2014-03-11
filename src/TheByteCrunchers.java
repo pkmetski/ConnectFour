@@ -3,7 +3,7 @@ import Logic.PatternControl;
 import Logic.TransitionController;
 import Model.State;
 
-public class GameLogic implements IGameLogic {
+public class TheByteCrunchers implements IGameLogic {
 	private int x = 0;
 	private int y = 0;
 	private int playerID;
@@ -13,7 +13,7 @@ public class GameLogic implements IGameLogic {
 	private TransitionController transitionController;
 	private GameTree tree;
 
-	public GameLogic() {
+	public TheByteCrunchers() {
 		// TODO Write your implementation for this method
 	}
 
