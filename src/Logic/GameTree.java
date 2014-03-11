@@ -14,7 +14,7 @@ public class GameTree {
 	private Map<Double, Integer> applicableActions;
 	private ArrayList<Double> applicableActions1;
 	private int AIplayerID;
-	private int Depth = 11;
+	private static final int MAX_DEPTH = 11;
 
 	public GameTree(int playerID) {
 		this.AIplayerID = playerID;
@@ -31,7 +31,7 @@ public class GameTree {
 	public double Max_Value(State state, double alpha, double beta, int depth) {
 		int winner = pControl.finishedgame(state, 4);
 		boolean tie = state.isBoardFull();
-		if (depth >= Depth || tie || winner != 0) {
+		if (finished(depth, tie, winner)) {
 			return eval(state, winner, tie, depth);
 		}
 		double v = Double.MIN_VALUE;
@@ -57,7 +57,7 @@ public class GameTree {
 	public double Min_Value(State state, double alpha, double beta, int depth) {
 		int winner = pControl.finishedgame(state, 4);
 		boolean tie = state.isBoardFull();
-		if (depth >= Depth || tie || winner != 0) {
+		if (finished(depth, tie, winner)) {
 			return eval(state, winner, tie, depth);
 		}
 		double v = Double.MAX_VALUE;
@@ -73,6 +73,10 @@ public class GameTree {
 		return v;
 	}
 
+	private boolean finished(int depth, boolean tie, int winner) {
+		return depth >= MAX_DEPTH || tie || winner != 0;
+	}
+
 	private double eval(State state, int winner, boolean tie, int depth) {
 		if (winner == this.AIplayerID)
 			return 512 - depth * 5;
@@ -81,6 +85,6 @@ public class GameTree {
 		if (tie)
 			return 0;
 		return pControl.fastHeuristic(state, 4, AIplayerID);
-//		return pControl.Heuristic(state, 4, AIplayerID);
+		// return pControl.Heuristic(state, 4, AIplayerID);
 	}
 }
