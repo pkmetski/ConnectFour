@@ -103,12 +103,7 @@ public class PatternControl {
 				break;
 		}
 		if (state.getY() - state.getLastY(state.getLastX()) > minSize - count) {
-			if (count == 3)
-				return 32;
-			else if (count == 2)
-				return 4;
-			else if (count == 1)
-				return 1;
+			return getPoints(count);
 		}
 		return 0;
 	}
@@ -126,12 +121,7 @@ public class PatternControl {
 				else if (state.getBoard()[i + j][y] == aiPlayerID)
 					count++;
 				if (j == minSize - 1) {
-					if (count == 3)
-						total += 32;
-					else if (count == 2)
-						total += 4;
-					else if (count == 1)
-						total += 1;
+					total += getPoints(count);
 				}
 			}
 			count = 0;
@@ -157,12 +147,7 @@ public class PatternControl {
 							+ i + j] == aiPlayerID)
 						count++;
 					if (j == minSize - 1) {
-						if (count == 3)
-							total += 32;
-						else if (count == 2)
-							total += 4;
-						else if (count == 1)
-							total += 1;
+						total += getPoints(count);
 					}
 				}
 				count = 0;
@@ -189,18 +174,24 @@ public class PatternControl {
 							- (i + j)] == aiPlayerID)
 						count++;
 					if (j == minSize - 1) {
-						if (count == 3)
-							total += 32;
-						else if (count == 2)
-							total += 4;
-						else if (count == 1)
-							total += 1;
+						total += getPoints(count);
 					}
 				}
 				count = 0;
 			}
 		}
 		return total;
+	}
+
+	private int getPoints(int count) {
+		if (count == 3)
+			return 32;
+		else if (count == 2)
+			return 4;
+		else if (count == 1)
+			return 1;
+		else
+			return 0;
 	}
 
 	// public double newHeu(State state, int minSize, int aiPlayerID) {
