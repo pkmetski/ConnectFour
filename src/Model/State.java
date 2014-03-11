@@ -2,10 +2,10 @@ package Model;
 
 //this represents a node of the game tree
 public class State {
-	private byte[][] board;
-	private int[] yPos;
-	private int playerId;
-	private int lastX=0;
+	private byte[][] board; // the board game
+	private int[] yPos; // keep the track of the empty places in each column
+	private int playerId; // last player ID that create this state
+	private int lastX=0; // last column number that create this state
 
 	public State(byte[][] board, int[] yPos) {
 		this.board = board;
@@ -48,10 +48,12 @@ public class State {
 		return this.board[0].length;
 	}
 
+	// return the next available position in column x
 	public int getLastY(int x) {
 		return this.yPos[x] - 1;
 	}
 
+	// return the last column that created this state
 	public int getLastX() {
 		return this.lastX;
 	}
@@ -64,6 +66,7 @@ public class State {
 		return this.playerId;
 	}
 
+	//has been override to keep the arrays in the new state
 	@Override
 	public State clone() {
 		int[] newYPos = new int[yPos.length];

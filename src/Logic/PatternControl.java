@@ -4,12 +4,13 @@ import Model.State;
 
 public class PatternControl {
 
+	// check for connect 4 in the whole board and return the winner's ID or if nobody won return 0
 	public int finishedgame(State state, int minSize) {
 		int countH = 0, countV = 0, countD = 0, countDN = 0, y = state
 				.getLastY(state.getLastX()), startPointX = state.getLastX()
 				- minSize, startPointY = y - minSize;
 		for (int i = 1; i < minSize * 2; i++) {
-			// hor
+			// check for horizontal connect four
 			if (startPointX + i >= 0 && startPointX + i < state.getX()) {
 				if (state.getBoard()[startPointX + i][y] == state.getPlayerId())
 					countH++;
@@ -18,7 +19,7 @@ public class PatternControl {
 				if (countH == minSize)
 					return state.getPlayerId();
 			}
-			// ver
+			// check for vertical connect four
 			if (startPointY + i >= 0 && startPointY + i < state.getY()) {
 				if (state.getBoard()[state.getLastX()][startPointY + i] == state
 						.getPlayerId())
@@ -28,7 +29,7 @@ public class PatternControl {
 				if (countV == minSize)
 					return state.getPlayerId();
 			}
-			// dia
+			// check for positive diagonal connect four
 			if (startPointY + i >= 0 && startPointX + i >= 0
 					&& startPointY + i < state.getY()
 					&& startPointX + i < state.getX()) {
@@ -40,7 +41,7 @@ public class PatternControl {
 				if (countD == minSize)
 					return state.getPlayerId();
 			}
-			// diaN
+			// check for negative diagonal connect four
 			if (y + minSize - i < state.getY() && startPointX + i >= 0
 					&& y + minSize - i >= 0 && startPointX + i < state.getX()) {
 				if (state.getBoard()[startPointX + i][y + minSize - i] == state
@@ -63,6 +64,7 @@ public class PatternControl {
 				+ diaNegHeuristic(state, minSize, aiPlayerID);
 	}
 
+	//calculate the heuristic for vertical possibilities
 	private double verHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0;
 		for (int j = state.getLastY(state.getLastX()); j >= 0; j--) {
@@ -77,6 +79,7 @@ public class PatternControl {
 		return 0;
 	}
 
+	// calculate the heuristic for horizontal possibilities
 	private double horHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
 		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
@@ -98,6 +101,7 @@ public class PatternControl {
 		return total;
 	}
 
+	// calculate the heuristic for positive diagonal possibilities
 	private double diaPosHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
 		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
@@ -125,6 +129,7 @@ public class PatternControl {
 		return total;
 	}
 
+	// calculate the heuristic for negative diagonal possibilities
 	private double diaNegHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
 		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
@@ -152,14 +157,15 @@ public class PatternControl {
 		}
 		return total;
 	}
-
+	
+	// return the worth of that token 
 	private int getPoints(int count, int currentPlayerId, int maxPlayerId) {
 		int coefficient = maxPlayerId == currentPlayerId ? 1 : -1;
-		if (count == 3)
+		if (count == 3) // if there is 3 token 
 			return coefficient * 32;
-		else if (count == 2)
+		else if (count == 2) // if there is 2 token 
 			return coefficient * 4;
-		else if (count == 1)
+		else if (count == 1) // if there is 1 token 
 			return coefficient * 1;
 		else
 			return 0;
