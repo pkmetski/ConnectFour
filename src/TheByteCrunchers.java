@@ -18,6 +18,7 @@ public class TheByteCrunchers implements IGameLogic {
 	}
 
 	public Winner gameFinished() {
+		// get the result of the current state, based on our winning size(4)
 		int result = pControl.finishedgame(currentState, WINNING_SIZE);
 		if (result == 1) {
 			return Winner.PLAYER1;
@@ -31,12 +32,13 @@ public class TheByteCrunchers implements IGameLogic {
 	}
 
 	public void insertCoin(int x, int playerID) {
+		// places a token in the current state in the column provided
 		transitionController.transition(currentState, x, playerID);
 	}
 
 	public int decideNextMove() {
-		if(currentState.isBoardEmpty())
-			return currentState.getX()/2;
+		if (currentState.isBoardEmpty())
+			return currentState.getX() / 2;
 		return tree.Alpha_Beta_Search(currentState);
 	}
 }
