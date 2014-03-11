@@ -2,7 +2,6 @@ package Logic;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import Model.State;
 
 public class TransitionController {

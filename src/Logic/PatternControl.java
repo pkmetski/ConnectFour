@@ -1,38 +1,8 @@
 package Logic;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
-
 import Model.State;
 
 public class PatternControl {
-
-	private Map<Integer, Double> stateDataBase;
-
-	public void clearStateDataBase() {
-		stateDataBase = new HashMap<Integer, Double>();
-	}
-
-	public double fastHeuristic(State newState, int minSize, int aiPlayerID) {
-		// // long startTime = System.nanoTime();
-		// int hash = Arrays.deepHashCode(newState.getBoard());
-		// // long endTime = System.nanoTime();
-		// // long duration = endTime - startTime;
-		// // System.out.println("hash: "+duration);
-		//
-		// if (stateDataBase.containsKey(hash))
-		// return stateDataBase.get(hash);
-		// // long startTime2 = System.nanoTime();
-		// double heuristic = Heuristic(newState, minSize, aiPlayerID);
-		// // long endTime2 = System.nanoTime();
-		// // long duration2 = endTime2 - startTime2;
-		// // System.out.println("heuristic: "+duration2);
-		// stateDataBase.put(hash, heuristic);
-		// return heuristic;
-		return Heuristic(newState, minSize, aiPlayerID);
-	}
 
 	public int finishedgame(State state, int minSize) {
 		int countH = 0, countV = 0, countD = 0, countDN = 0, y = state
@@ -91,7 +61,6 @@ public class PatternControl {
 				+ horHeuristic(state, minSize, aiPlayerID)
 				+ diaPosHeuristic(state, minSize, aiPlayerID)
 				+ diaNegHeuristic(state, minSize, aiPlayerID);
-		// return newHeu(state, minSize, aiPlayerID);
 	}
 
 	private double verHeuristic(State state, int minSize, int aiPlayerID) {
@@ -103,25 +72,25 @@ public class PatternControl {
 				break;
 		}
 		if (state.getY() - state.getLastY(state.getLastX()) > minSize - count) {
-			return getPoints(count);
+			return getPoints(count, state.getPlayerId(), aiPlayerID);
 		}
 		return 0;
 	}
 
 	private double horHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
-		int humanPlayerID = aiPlayerID == 1 ? 2 : 1;
+		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
 		int minBound = Math.max(0, state.getLastX() - minSize + 1);
 		int maxBound = Math.min(state.getX(), state.getLastX() + minSize)
 				- minSize + 1;
 		for (int i = minBound; i < maxBound; i++) {
 			for (int j = 0; j < minSize; j++) {
-				if (state.getBoard()[i + j][y] == humanPlayerID)
+				if (state.getBoard()[i + j][y] == opPlayerId)
 					break;
-				else if (state.getBoard()[i + j][y] == aiPlayerID)
+				else if (state.getBoard()[i + j][y] == state.getPlayerId())
 					count++;
 				if (j == minSize - 1) {
-					total += getPoints(count);
+					total += getPoints(count, state.getPlayerId(), aiPlayerID);
 				}
 			}
 			count = 0;
@@ -131,7 +100,7 @@ public class PatternControl {
 
 	private double diaPosHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
-		int humanPlayerID = aiPlayerID == 1 ? 2 : 1;
+		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
 		int startPointX = state.getLastX() - minSize + 1, startPointY = y
 				- minSize + 1;
 		for (int i = 0; i < minSize; i++) {
@@ -139,15 +108,15 @@ public class PatternControl {
 					&& y + i < state.getY()
 					&& state.getLastX() + i < state.getX()) {
 				for (int j = 0; j < minSize; j++) {
-
 					if (state.getBoard()[startPointX + i + j][startPointY + i
-							+ j] == humanPlayerID)
+							+ j] == opPlayerId)
 						break;
 					else if (state.getBoard()[startPointX + i + j][startPointY
-							+ i + j] == aiPlayerID)
+							+ i + j] == state.getPlayerId())
 						count++;
 					if (j == minSize - 1) {
-						total += getPoints(count);
+						total += getPoints(count, state.getPlayerId(),
+								aiPlayerID);
 					}
 				}
 				count = 0;
@@ -158,7 +127,7 @@ public class PatternControl {
 
 	private double diaNegHeuristic(State state, int minSize, int aiPlayerID) {
 		int count = 0, total = 0, y = state.getLastY(state.getLastX());
-		int humanPlayerID = aiPlayerID == 1 ? 2 : 1;
+		int opPlayerId = state.getPlayerId() == 1 ? 2 : 1;
 		int startPointX = state.getLastX() - minSize + 1, startPointY = y
 				+ minSize - 1;
 		for (int i = 0; i < minSize; i++) {
@@ -168,13 +137,14 @@ public class PatternControl {
 				for (int j = 0; j < minSize; j++) {
 
 					if (state.getBoard()[startPointX + i + j][startPointY
-							- (i + j)] == humanPlayerID)
+							- (i + j)] == opPlayerId)
 						break;
 					else if (state.getBoard()[startPointX + i + j][startPointY
-							- (i + j)] == aiPlayerID)
+							- (i + j)] == state.getPlayerId())
 						count++;
 					if (j == minSize - 1) {
-						total += getPoints(count);
+						total += getPoints(count, state.getPlayerId(),
+								aiPlayerID);
 					}
 				}
 				count = 0;
@@ -183,58 +153,15 @@ public class PatternControl {
 		return total;
 	}
 
-	private int getPoints(int count) {
+	private int getPoints(int count, int currentPlayerId, int maxPlayerId) {
+		int coefficient = maxPlayerId == currentPlayerId ? 1 : -1;
 		if (count == 3)
-			return 32;
+			return coefficient * 32;
 		else if (count == 2)
-			return 4;
+			return coefficient * 4;
 		else if (count == 1)
-			return 1;
+			return coefficient * 1;
 		else
 			return 0;
 	}
-
-	// public double newHeu(State state, int minSize, int aiPlayerID) {
-	// int rows = state.getY();
-	// int cols = state.getX();
-	// double eval = 0;
-	// for (int row = 0; row < rows; row++) {
-	// for (int column = 0; column < cols - 5; column++) {
-	// if (row % 2 == 0)
-	// // _XXX_
-	// {
-	// if (state.getBoard()[row][column] == 0
-	// && state.getBoard()[row][column + 1] == 1
-	// && state.getBoard()[row][column + 1] == state
-	// .getBoard()[row][column + 2]
-	// && state.getBoard()[row][column + 2] == state
-	// .getBoard()[row][column + 3]
-	// && state.getBoard()[row][column + 4] == 0) {
-	// eval = -999;
-	// }
-	//
-	// // X_XX_
-	// if (state.getBoard()[row][column] == 1
-	// && state.getBoard()[row][column + 1] == 0
-	// && state.getBoard()[row][column] == state
-	// .getBoard()[row][column + 2]
-	// && state.getBoard()[row][column] == state
-	// .getBoard()[row][column + 3]
-	// && state.getBoard()[row][column + 4] == 0) {
-	// eval = -900;
-	// }
-	// // XX_X_
-	// if (state.getBoard()[row][column] == 1
-	// && state.getBoard()[row][column + 1] == 1
-	// && state.getBoard()[row][column + 2] == 0
-	// && state.getBoard()[row][column] == state
-	// .getBoard()[row][column + 3]
-	// && state.getBoard()[row][column + 4] == 0) {
-	// eval = -900;
-	// }
-	// }
-	// }
-	// }
-	// return eval;
-	// }
 }

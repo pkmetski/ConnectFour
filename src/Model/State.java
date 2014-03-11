@@ -1,13 +1,10 @@
 package Model;
 
-import java.util.ArrayList;
-
 //this represents a node of the game tree
 public class State {
 	private byte[][] board;
 	private int[] yPos;
 	private int playerId;
-	private double value;
 	private int lastX=0;
 
 	public State(byte[][] board, int[] yPos) {
@@ -65,14 +62,6 @@ public class State {
 
 	public int getPlayerId() {
 		return this.playerId;
-	}
-
-	public double getValue() {
-		return value;
-	}
-
-	public void setValue(double value) {
-		this.value = value;
 	}
 
 	@Override
